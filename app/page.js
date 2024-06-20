@@ -1,8 +1,39 @@
+'use client';
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { client } from "@/sanity/lib/client";
+import { useEffect } from "react";
 
 export default function Component() {
+
+  async function getProducts() {
+    const query = `*[_type == "curtain"] {
+    _id,
+    title,
+    description,
+    "imageUrl": image.asset->url,
+    price,
+    size,
+    material,
+    color,
+    availability
+  }`;
+
+    try {
+      const curtains = await client.fetch(query);
+      console.log(curtains);
+      return curtains;
+    } catch (error) {
+      console.log('Error fetching curtains', error);
+    }
+  }
+  
+  useEffect(()=>{
+    getProducts();
+  }, []);
+  // const products = await getProducts();
+  // console.log(products);
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <header className="px-4 lg:px-6 h-14 flex items-center sticky top-0 z-10 backdrop-blur-sm">
